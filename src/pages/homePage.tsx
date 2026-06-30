@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
 
-const homePage: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
-    <div>homePage</div>
-  )
-}
+    <div className="min-h-screen bg-white p-8">
+      <h1 className="text-4xl font-bold mb-4">Home</h1>
+      <p className="text-lg text-gray-600">
+        Home page content coming soon...
+      </p>
+    </div>
+  );
+};
 
-export default homePage
+export default HomePage;
