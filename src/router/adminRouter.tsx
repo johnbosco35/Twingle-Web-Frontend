@@ -3,9 +3,9 @@
 // import Layout from "@/components/layout/layout";
 // import { withSuspense } from "@/router/withSuspense";
 // import LoginPage from "@/components/auth/userAuth/login";
+// import SignupPage from "@/components/auth/userAuth/signup";
 // import ForgotPasswordPage from "@/components/auth/userAuth/forgotPassword";
 // import VerifyOtpPage from "@/components/auth/userAuth/verifyOtp";
-// import Signupvendor from "@/components/auth/vendor/Signupvendor";
 
 // const Home = lazy(() => import("@/pages/homePage"));
 
@@ -15,8 +15,8 @@
 //     element: <LoginPage />,
 //   },
 //   {
-//     path: "/signup-vendor",
-//     element: <Signupvendor />,
+//     path: "/signup",
+//     element: <SignupPage />,
 //   },
 //   {
 //     path: "/forgot-password",
