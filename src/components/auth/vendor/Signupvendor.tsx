@@ -9,6 +9,7 @@ export default function Signupvendor() {
     firstName: "",
     lastName: "",
     email: "",
+    country: "",
     password: "",
     confirmPassword: "",
   });
@@ -247,7 +248,7 @@ export default function Signupvendor() {
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
             <Link
-              to="/login"
+              to="/login-vendor"
               className="font-semibold text-teal-500 transition-colors hover:text-teal-600"
             >
               Login

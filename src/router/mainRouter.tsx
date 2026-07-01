@@ -7,6 +7,7 @@ import SignupPage from "@/components/auth/userAuth/signup";
 import ForgotPasswordPage from "@/components/auth/userAuth/forgotPassword";
 import VerifyOtpPage from "@/components/auth/userAuth/verifyOtp";
 import Signupvendor from "@/components/auth/vendor/Signupvendor";
+import Loginvendor from "@/components/auth/vendor/loginvendor";
 
 const Home = lazy(() => import("@/pages/homePage"));
 
@@ -39,7 +40,19 @@ const routes: RouteObject[] = [
   {
       path: "/signup-vendor",
       element: <Signupvendor />,
-    },
+  },
+   {
+    path: "/login-vendor",
+    element: <Loginvendor />,
+  },
+    {
+    path: "/forgot-password-vendor",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/verify-otp-vendor",
+    element: <VerifyOtpPage />,
+  },
 ];
 
 export const router = createBrowserRouter(routes);
