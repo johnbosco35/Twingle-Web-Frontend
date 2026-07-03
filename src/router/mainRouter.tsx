@@ -7,8 +7,8 @@ import SignupPage from "@/components/auth/userAuth/signup";
 import ForgotPasswordPage from "@/components/auth/userAuth/forgotPassword";
 import VerifyOtpPage from "@/components/auth/userAuth/verifyOtp";
 import Signupvendor from "@/components/auth/vendor/Signupvendor";
-import Loginvendor from "@/components/auth/vendor/loginvendor";
 import ForgotPasswordvendor from "@/components/auth/vendor/forgotPasswordvendor";
+import Loginvendor from "@/components/auth/vendor/Loginvendor";
 
 const Home = lazy(() => import("@/pages/homePage"));
 
