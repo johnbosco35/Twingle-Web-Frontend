@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, HatGlasses } from "lucide-react";
 import { Link } from "react-router-dom";
 import SimpleSlider from "../../../lib/Sliding";
 
@@ -9,9 +9,9 @@ export default function Signupvendor() {
     firstName: "",
     lastName: "",
     email: "",
-    country: "",
     password: "",
     confirmPassword: "",
+    agentType: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -88,6 +88,7 @@ export default function Signupvendor() {
           onSubmit={handleSignup}
           className="flex w-full max-w-[600px] flex-col items-stretch gap-5 px-0 sm:gap-6"
         >
+            {/* FirstName */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex h-[50px] w-full items-center gap-3">
               <User className="text-gray-400" />
@@ -101,6 +102,8 @@ export default function Signupvendor() {
                 required
               />
             </div>
+
+            {/* LastName */}
             <div className="flex h-[50px] w-full items-center gap-3">
               <User className="text-gray-400" />
               <input
@@ -114,7 +117,7 @@ export default function Signupvendor() {
               />
             </div>
           </div>
-
+                {/* Email */}
           <div className="flex h-[50px] w-full items-center gap-3">
             <Mail className="text-gray-400" />
             <input
@@ -128,6 +131,26 @@ export default function Signupvendor() {
             />
           </div>
 
+          {/*  Select Option for Agent Type */}
+          <div className="flex h-[50px] w-full items-center gap-3">
+            <HatGlasses className="text-gray-400" />
+            <select
+              name="agentType"
+              value={formData.agentType}
+              onChange={(e) => 
+                setFormData((prev) => ({ ...prev, agentType: e.target.value }))
+              }
+              className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-gray-700 focus:outline-none"
+              required
+            >
+              <option value="" disabled>Select Agent Type</option>
+              <option value="property agent">Property Agent</option>
+              <option value="auto agent">Auto Agent</option>
+              <option value="both">Become Both</option>
+            </select>
+          </div>
+
+              {/* Password */}
           <div className="flex h-[50px] w-full items-center gap-3">
             <Lock className="text-gray-400" />
             <div className="flex h-full w-full items-center gap-3 rounded-[5px] border border-gray-400 px-3">
@@ -154,6 +177,7 @@ export default function Signupvendor() {
             </div>
           </div>
 
+              {/* confrim Password */}
           <div className="flex h-[50px] w-full items-center gap-3">
             <Lock className="text-gray-400" />
             <div className="flex h-full w-full items-center gap-3 rounded-[5px] border border-gray-400 px-3">
