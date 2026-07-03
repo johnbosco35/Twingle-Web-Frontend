@@ -31,6 +31,7 @@ export default function Signupvendor() {
     }
     setIsLoading(true);
     // API call would go here
+    
     setTimeout(() => setIsLoading(false), 2000);
   };
 
@@ -83,6 +84,14 @@ export default function Signupvendor() {
           alt="Twingle logo"
           className="mb-4 h-14 w-auto sm:h-16"
         />
+
+          <h1 className="mb-2 text-2xl font-bold">Welcome to Twingle.com!</h1>
+              <p className="mb-4 text-gray-600">
+                We’re excited to have you onboard—start selling and growing your
+                business with us today!
+              </p>
+              <br />
+              {/* <br /> */}
 
         <form
           onSubmit={handleSignup}
