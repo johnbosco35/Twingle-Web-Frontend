@@ -141,7 +141,7 @@ export default function Loginvendor() {
               <span className="text-sm text-gray-600">Remember me</span>
             </label>
             <Link
-              to="/forgot-password"
+              to="/vendor-forgot"
               className="text-sm font-medium text-teal-600 transition-colors hover:text-teal-700"
             >
               Forgot password?
@@ -185,7 +185,7 @@ export default function Loginvendor() {
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
             <Link
-              to="/signup-vendor"
+              to="/vendor-signup"
               className="font-semibold text-teal-500 transition-colors hover:text-teal-600"
             >
               Register

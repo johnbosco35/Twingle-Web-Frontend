@@ -8,6 +8,7 @@ import ForgotPasswordPage from "@/components/auth/userAuth/forgotPassword";
 import VerifyOtpPage from "@/components/auth/userAuth/verifyOtp";
 import Signupvendor from "@/components/auth/vendor/Signupvendor";
 import Loginvendor from "@/components/auth/vendor/loginvendor";
+import ForgotPasswordvendor from "@/components/auth/vendor/forgotPasswordvendor";
 
 const Home = lazy(() => import("@/pages/homePage"));
 
@@ -38,19 +39,19 @@ const routes: RouteObject[] = [
 
   //vendorRouter
   {
-      path: "/signup-vendor",
+      path: "/vendor-signup",
       element: <Signupvendor />,
   },
    {
-    path: "/login-vendor",
+    path: "/vendor-login",
     element: <Loginvendor />,
   },
     {
-    path: "/forgot-password-vendor",
-    element: <ForgotPasswordPage />,
+    path: "/vendor-forgot",
+    element: <ForgotPasswordvendor />,
   },
   {
-    path: "/verify-otp-vendor",
+    path: "/vendor-verify",
     element: <VerifyOtpPage />,
   },
 ];
