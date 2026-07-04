@@ -7,7 +7,13 @@ import SignupPage from "@/components/auth/userAuth/signup";
 import SellerSignupPage from "@/components/auth/sellerAuth/sellerSignup";
 import ForgotPasswordPage from "@/components/auth/userAuth/forgotPassword";
 import VerifyOtpPage from "@/components/auth/userAuth/verifyOtp";
+
+import Signupvendor from "@/components/auth/vendor/Signupvendor";
+import ForgotPasswordvendor from "@/components/auth/vendor/forgotPasswordvendor";
+import Loginvendor from "@/components/auth/vendor/Loginvendor";
+
 import AccountTypeSelectionPage from "@/pages/accountTypeSelectionPage";
+
 
 const Home = lazy(() => import("@/pages/homePage"));
 const RealEstate = lazy(() => import("@/pages/realEstatePage"));
@@ -48,6 +54,26 @@ const routes: RouteObject[] = [
       { path: "automotive", element: withSuspense(Automotive) },
       { path: "verification", element: withSuspense(Verification) },
     ],
+  },
+
+
+
+  //vendorRouter
+  {
+      path: "/vendor-signup",
+      element: <Signupvendor />,
+  },
+   {
+    path: "/vendor-login",
+    element: <Loginvendor />,
+  },
+    {
+    path: "/vendor-forgot",
+    element: <ForgotPasswordvendor />,
+  },
+  {
+    path: "/vendor-verify",
+    element: <VerifyOtpPage />,
   },
 ];
 
