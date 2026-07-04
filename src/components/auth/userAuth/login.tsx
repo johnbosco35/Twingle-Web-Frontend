@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, User, Lock, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { z } from "zod";
 import SimpleSlider from "../../../lib/Sliding";
-import {
-  loginSchema,
-  type LoginFormData,
-} from "../../../lib/validationSchemas";
-
-const LOGIN_EMAIL_STORAGE_KEY = "twingle_login_email";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,60 +10,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const storedEmail = window.localStorage.getItem(LOGIN_EMAIL_STORAGE_KEY);
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
-
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    if (value.trim()) {
-      window.localStorage.setItem(LOGIN_EMAIL_STORAGE_KEY, value.trim());
-    } else {
-      window.localStorage.removeItem(LOGIN_EMAIL_STORAGE_KEY);
-    }
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
-
-    try {
-      const formData: LoginFormData = {
-        email,
-        password,
-        rememberMe,
-      };
-
-      // Validate form data
-      loginSchema.parse(formData);
-
-      setIsLoading(true);
-      // API call would go here
-      setTimeout(() => setIsLoading(false), 2000);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors: Record<string, string> = {};
-        error.issues.forEach((err) => {
-          const path = err.path.join(".");
-          newErrors[path] = err.message;
-        });
-        setErrors(newErrors);
-      }
-    }
-  };
-
-  const leftVariants = {
-    hidden: { opacity: 0, x: -30 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
+    setIsLoading(true);
+    // API call would go here
+    setTimeout(() => setIsLoading(false), 2000);
   };
 
   const rightVariants = {
@@ -92,23 +37,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden bg-white p-0">
+    <div className="flex min-h-screen overflow-x-hidden p-0">
       {/* LeftSide Branding */}
-      <motion.div
-        variants={leftVariants}
-        initial="hidden"
-        animate="visible"
-        className="hidden md:flex md:h-screen md:w-[45%] lg:w-1/2"
-      >
+      <div className="hidden md:flex md:w-1/2 md:h-screen">
         <SimpleSlider />
-      </motion.div>
+      </div>
 
       {/* RightSide Login Form */}
       <motion.div
         variants={rightVariants}
         initial="hidden"
         animate="visible"
-        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-[55%] md:px-6 lg:w-1/2 lg:px-8 xl:px-10"
+        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-1/2 md:px-8 lg:px-10"
       >
         <img
           src="src/assets/Container.png"
@@ -118,89 +58,46 @@ export default function LoginPage() {
 
         <form
           onSubmit={handleLogin}
-          className="flex w-full max-w-[560px] flex-col items-stretch gap-4 px-0 sm:gap-5 md:gap-6"
+          className="flex w-full max-w-[600px] flex-col items-stretch gap-5 px-0 sm:gap-6"
         >
-          {/* Email Field */}
-          <div>
-            <div className="flex h-[50px] w-full items-center gap-3">
-              <User className="text-gray-400" />
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => {
-                  handleEmailChange(e.target.value);
-                  if (errors.email) {
-                    setErrors((prev) => {
-                      const newErrors = { ...prev };
-                      delete newErrors.email;
-                      return newErrors;
-                    });
-                  }
-                }}
-                className={`h-full w-full rounded-[5px] border bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none ${
-                  errors.email ? "border-red-500" : "border-gray-400"
-                }`}
-              />
-            </div>
-            {errors.email && (
-              <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
-                <AlertCircle size={16} />
-                {errors.email}
-              </div>
-            )}
+          <div className="flex h-[50px] w-full items-center gap-3">
+            <User className="text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-white placeholder:text-gray-400 focus:outline-none"
+            />
           </div>
-
-          {/* Password Field */}
-          <div>
-            <div className="flex h-[50px] w-full items-center gap-3">
-              <Lock className="text-gray-400" />
-              <div
-                className={`flex h-full w-full items-center gap-3 border rounded-[5px] px-3 ${
-                  errors.password ? "border-red-500" : "border-gray-400"
-                }`}
-              >
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (errors.password) {
-                      setErrors((prev) => {
-                        const newErrors = { ...prev };
-                        delete newErrors.password;
-                        return newErrors;
-                      });
-                    }
-                  }}
-                  className="w-full h-full text-gray-700 bg-transparent placeholder:text-gray-400 focus:outline-none"
+          <div className="flex h-[50px] w-full items-center gap-3">
+            <Lock className="text-gray-400" />
+            <div className="flex h-full w-full items-center gap-3 border border-gray-400 rounded-[5px] px-3">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full h-full text-white bg-transparent placeholder:text-gray-400 focus:outline-none"
+              />
+              {showPassword ? (
+                <EyeOff
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => setShowPassword(false)}
                 />
-                {showPassword ? (
-                  <EyeOff
-                    className="text-gray-400 cursor-pointer"
-                    onClick={() => setShowPassword(false)}
-                  />
-                ) : (
-                  <Eye
-                    className="text-gray-400 cursor-pointer"
-                    onClick={() => setShowPassword(true)}
-                  />
-                )}
-              </div>
+              ) : (
+                <Eye
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => setShowPassword(true)}
+                />
+              )}
             </div>
-            {errors.password && (
-              <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
-                <AlertCircle size={16} />
-                {errors.password}
-              </div>
-            )}
           </div>
 
           {/* Remember Me & Forgot Password */}
           <motion.div
             variants={itemVariants}
-            className="flex w-full flex-col gap-3 rounded-[5px] border border-gray-200 bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+            className="flex w-full items-center justify-between gap-4 rounded-[5px] border border-gray-200 bg-slate-50 px-4 py-3"
           >
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -245,18 +142,18 @@ export default function LoginPage() {
         {/* Bottom Links */}
         <motion.div
           variants={itemVariants}
-          className="mt-4 flex w-full max-w-[560px] flex-col items-center gap-4 border-t border-gray-200 pt-4"
+          className="mt-4 flex w-full max-w-[600px] flex-col items-center gap-4 border-t border-gray-200 pt-4"
         >
           <Link
             to="/"
-            className="flex h-[50px] w-full items-center justify-center rounded-[5px] border border-gray-300 bg-transparent px-5 text-center text-sm font-semibold text-gray-500 transition-colors hover:bg-gray-100"
+            className="flex items-center justify-center  bg-transparent px-5 py-2.5 text-sm font-semibold text-gray-500 transition-colors hover:bg-gray-100 w-full h-[50px] text-center rounded-[5px] border border-gray-300"
           >
             Go Home
           </Link>
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
             <Link
-              to="/select-account"
+              to="/signup"
               className="font-semibold text-teal-500 transition-colors hover:text-teal-600"
             >
               Register
