@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { z } from "zod";
 import SimpleSlider from "../../../lib/Sliding";
+import {
+  signupSchema,
+  type SignupFormData,
+} from "../../../lib/validationSchemas";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -16,21 +21,51 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
+    setErrors({});
+
+    try {
+      const dataToValidate: SignupFormData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        agreeToTerms: agreeToTerms,
+      };
+
+      // Validate form data
+      signupSchema.parse(dataToValidate);
+
+      setIsLoading(true);
+      // API call would go here
+      setTimeout(() => setIsLoading(false), 2000);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.issues.forEach((err) => {
+          const path = err.path.join(".");
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
+      }
     }
-    setIsLoading(true);
-    // API call would go here
-    setTimeout(() => setIsLoading(false), 2000);
   };
 
   const leftVariants = {
@@ -61,12 +96,12 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden p-0">
+    <div className="flex min-h-screen overflow-x-hidden bg-white p-0">
       <motion.div
         variants={leftVariants}
         initial="hidden"
         animate="visible"
-        className="hidden md:flex md:h-screen md:w-1/2"
+        className="hidden md:flex md:h-screen md:w-[45%] lg:w-1/2"
       >
         <SimpleSlider />
       </motion.div>
@@ -75,7 +110,7 @@ export default function SignupPage() {
         variants={rightVariants}
         initial="hidden"
         animate="visible"
-        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-1/2 md:px-8 lg:px-10"
+        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-[55%] md:px-6 lg:w-1/2 lg:px-8 xl:px-10"
       >
         <img
           src="src/assets/Container.png"
@@ -85,109 +120,175 @@ export default function SignupPage() {
 
         <form
           onSubmit={handleSignup}
-          className="flex w-full max-w-[600px] flex-col items-stretch gap-5 px-0 sm:gap-6"
+          className="flex w-full max-w-[620px] flex-col items-stretch gap-4 px-0 sm:gap-5 md:gap-6"
         >
+          {/* First Name and Last Name */}
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex h-[50px] w-full items-center gap-3">
-              <User className="text-gray-400" />
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                required
-              />
-            </div>
-            <div className="flex h-[50px] w-full items-center gap-3">
-              <User className="text-gray-400" />
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="flex h-[50px] w-full items-center gap-3">
-            <Mail className="text-gray-400" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div className="flex h-[50px] w-full items-center gap-3">
-            <Lock className="text-gray-400" />
-            <div className="flex h-full w-full items-center gap-3 rounded-[5px] border border-gray-400 px-3">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="h-full w-full bg-transparent text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                required
-              />
-              {showPassword ? (
-                <EyeOff
-                  className="cursor-pointer text-gray-400"
-                  onClick={() => setShowPassword(false)}
+            <div>
+              <div className="flex h-[50px] w-full items-center gap-3">
+                <User className="text-gray-400" />
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className={`h-full w-full rounded-[5px] border bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none ${
+                    errors.firstName ? "border-red-500" : "border-gray-400"
+                  }`}
                 />
-              ) : (
-                <Eye
-                  className="cursor-pointer text-gray-400"
-                  onClick={() => setShowPassword(true)}
+              </div>
+              {errors.firstName && (
+                <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+                  <AlertCircle size={16} />
+                  {errors.firstName}
+                </div>
+              )}
+            </div>
+            <div>
+              <div className="flex h-[50px] w-full items-center gap-3">
+                <User className="text-gray-400" />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className={`h-full w-full rounded-[5px] border bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none ${
+                    errors.lastName ? "border-red-500" : "border-gray-400"
+                  }`}
                 />
+              </div>
+              {errors.lastName && (
+                <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+                  <AlertCircle size={16} />
+                  {errors.lastName}
+                </div>
               )}
             </div>
           </div>
 
-          <div className="flex h-[50px] w-full items-center gap-3">
-            <Lock className="text-gray-400" />
-            <div className="flex h-full w-full items-center gap-3 rounded-[5px] border border-gray-400 px-3">
+          {/* Email Field */}
+          <div>
+            <div className="flex h-[50px] w-full items-center gap-3">
+              <Mail className="text-gray-400" />
               <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
                 onChange={handleChange}
-                className="h-full w-full bg-transparent text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                required
+                className={`h-full w-full rounded-[5px] border bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none ${
+                  errors.email ? "border-red-500" : "border-gray-400"
+                }`}
               />
-              {showConfirmPassword ? (
-                <EyeOff
-                  className="cursor-pointer text-gray-400"
-                  onClick={() => setShowConfirmPassword(false)}
-                />
-              ) : (
-                <Eye
-                  className="cursor-pointer text-gray-400"
-                  onClick={() => setShowConfirmPassword(true)}
-                />
-              )}
             </div>
+            {errors.email && (
+              <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+                <AlertCircle size={16} />
+                {errors.email}
+              </div>
+            )}
+          </div>
+
+          {/* Password Field */}
+          <div>
+            <div className="flex h-[50px] w-full items-center gap-3">
+              <Lock className="text-gray-400" />
+              <div
+                className={`flex h-full w-full items-center gap-3 rounded-[5px] border px-3 ${
+                  errors.password ? "border-red-500" : "border-gray-400"
+                }`}
+              >
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="h-full w-full bg-transparent text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                />
+                {showPassword ? (
+                  <EyeOff
+                    className="cursor-pointer text-gray-400"
+                    onClick={() => setShowPassword(false)}
+                  />
+                ) : (
+                  <Eye
+                    className="cursor-pointer text-gray-400"
+                    onClick={() => setShowPassword(true)}
+                  />
+                )}
+              </div>
+            </div>
+            {errors.password && (
+              <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+                <AlertCircle size={16} />
+                {errors.password}
+              </div>
+            )}
+          </div>
+
+          {/* Confirm Password Field */}
+          <div>
+            <div className="flex h-[50px] w-full items-center gap-3">
+              <Lock className="text-gray-400" />
+              <div
+                className={`flex h-full w-full items-center gap-3 rounded-[5px] border px-3 ${
+                  errors.confirmPassword ? "border-red-500" : "border-gray-400"
+                }`}
+              >
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="h-full w-full bg-transparent text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                />
+                {showConfirmPassword ? (
+                  <EyeOff
+                    className="cursor-pointer text-gray-400"
+                    onClick={() => setShowConfirmPassword(false)}
+                  />
+                ) : (
+                  <Eye
+                    className="cursor-pointer text-gray-400"
+                    onClick={() => setShowConfirmPassword(true)}
+                  />
+                )}
+              </div>
+            </div>
+            {errors.confirmPassword && (
+              <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+                <AlertCircle size={16} />
+                {errors.confirmPassword}
+              </div>
+            )}
           </div>
 
           <motion.div
             variants={itemVariants}
-            className="flex w-full items-start gap-3 rounded-[5px] border border-gray-200 bg-slate-50 px-4 py-3"
+            className={`flex w-full flex-col gap-3 rounded-[5px] border px-4 py-3 sm:flex-row sm:items-start ${
+              errors.agreeToTerms
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-slate-50"
+            }`}
           >
             <input
               id="terms"
               type="checkbox"
               checked={agreeToTerms}
-              onChange={(e) => setAgreeToTerms(e.target.checked)}
+              onChange={(e) => {
+                setAgreeToTerms(e.target.checked);
+                if (errors.agreeToTerms) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.agreeToTerms;
+                    return newErrors;
+                  });
+                }
+              }}
               className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-teal-500"
             />
             <label
@@ -210,6 +311,12 @@ export default function SignupPage() {
               </a>
             </label>
           </motion.div>
+          {errors.agreeToTerms && (
+            <div className="flex items-center gap-2 text-red-500 text-sm">
+              <AlertCircle size={16} />
+              {errors.agreeToTerms}
+            </div>
+          )}
 
           <motion.button
             variants={itemVariants}
@@ -236,7 +343,7 @@ export default function SignupPage() {
 
         <motion.div
           variants={itemVariants}
-          className="mt-4 flex w-full max-w-[600px] flex-col items-center gap-4 border-t border-gray-200 pt-4"
+          className="mt-4 flex w-full max-w-[620px] flex-col items-center gap-4 border-t border-gray-200 pt-4"
         >
           <Link
             to="/"

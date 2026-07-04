@@ -7,8 +7,11 @@ import { router } from "@/router/mainRouter";
 import { queryClient } from "@/lib/queryClient";
 import ErrorBoundary from "@/components/error/errorBoundary";
 import NetworkError from "@/components/error/networkError";
+import { useAppSelector } from "@/redux/hooks";
 
 function App() {
+  const { isAuthenticated, user } = useAppSelector((state) => state.user);
+
   return (
     <QueryClientProvider client={queryClient}>
       <NetworkError>
@@ -16,6 +19,11 @@ function App() {
           <RouterProvider router={router} />
         </ErrorBoundary>
       </NetworkError>
+      {isAuthenticated && user && (
+        <div className="fixed bottom-4 right-4 z-[60] rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700 shadow-sm">
+          Logged in as {user.email || user.name || "user"}
+        </div>
+      )}
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
