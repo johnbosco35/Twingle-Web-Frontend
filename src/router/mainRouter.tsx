@@ -4,7 +4,6 @@ import Layout from "@/components/layout/layout";
 import { withSuspense } from "@/router/withSuspense";
 import LoginPage from "@/components/auth/userAuth/login";
 import SignupPage from "@/components/auth/userAuth/signup";
-import SellerSignupPage from "@/components/auth/sellerAuth/sellerSignup";
 import ForgotPasswordPage from "@/components/auth/userAuth/forgotPassword";
 import VerifyOtpPage from "@/components/auth/userAuth/verifyOtp";
 
@@ -13,6 +12,8 @@ import ForgotPasswordvendor from "@/components/auth/vendor/forgotPasswordvendor"
 import Loginvendor from "@/components/auth/vendor/Loginvendor";
 
 import AccountTypeSelectionPage from "@/pages/accountTypeSelectionPage";
+import VendorLayout from "@/components/vendor/Layout/Layout";
+import Dashboard from "@/components/vendor/Main/Dashboard";
 
 
 const Home = lazy(() => import("@/pages/homePage"));
@@ -28,10 +29,6 @@ const routes: RouteObject[] = [
   {
     path: "/signup",
     element: <SignupPage />,
-  },
-  {
-    path: "/seller-signup",
-    element: <SellerSignupPage />,
   },
   {
     path: "/select-account",
@@ -75,6 +72,16 @@ const routes: RouteObject[] = [
     path: "/vendor-verify",
     element: <VerifyOtpPage />,
   },
+  {
+    path: "/app",
+    element: <VendorLayout />,
+    children: [
+      { index: true, element: withSuspense(Dashboard) },
+      // { path: "dashboard", element: withSuspense(Dashboard) },
+    ],
+  },
+
+  //adminRouter
 ];
 
 export const router = createBrowserRouter(routes);

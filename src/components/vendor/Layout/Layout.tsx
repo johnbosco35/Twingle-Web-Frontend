@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 // import { useDarkMode } from "../Context/DarkModeContext";
 import { QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import DashboardSidebar from "../DashboardSidebar";
-import VendorHeader from "../VendorHeader";
+import DashboardSidebar from "../../static/vendor/DashboardSidebar";
+import VendorHeader from "../../static/vendor/VendorHeader";
  // Import dark mode context
 
 const VendorLayout: React.FC = () => {
@@ -20,7 +20,7 @@ const VendorLayout: React.FC = () => {
       <div className="flex h-screen">
         {/* Sidebar */}
         {/* <DashboardSidebar darkMode={darkMode} /> */}
-        <DashboardSidebar />
+        <DashboardSidebar darkMode={false} />
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
