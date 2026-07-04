@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import SimpleSlider from "../../../lib/Sliding";
-
-const LOGIN_EMAIL_STORAGE_KEY = "twingle_login_email";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,36 +11,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  useEffect(() => {
-    const storedEmail = window.localStorage.getItem(LOGIN_EMAIL_STORAGE_KEY);
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
-
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    if (value.trim()) {
-      window.localStorage.setItem(LOGIN_EMAIL_STORAGE_KEY, value.trim());
-    } else {
-      window.localStorage.removeItem(LOGIN_EMAIL_STORAGE_KEY);
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     // API call would go here
     setTimeout(() => setIsLoading(false), 2000);
-  };
-
-  const leftVariants = {
-    hidden: { opacity: 0, x: -30 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
   };
 
   const rightVariants = {
@@ -66,14 +39,9 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen overflow-x-hidden p-0">
       {/* LeftSide Branding */}
-      <motion.div
-        variants={leftVariants}
-        initial="hidden"
-        animate="visible"
-        className="hidden md:flex md:w-1/2 md:h-screen"
-      >
+      <div className="hidden md:flex md:w-1/2 md:h-screen">
         <SimpleSlider />
-      </motion.div>
+      </div>
 
       {/* RightSide Login Form */}
       <motion.div
@@ -98,8 +66,8 @@ export default function LoginPage() {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => handleEmailChange(e.target.value)}
-              className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none"
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-white placeholder:text-gray-400 focus:outline-none"
             />
           </div>
           <div className="flex h-[50px] w-full items-center gap-3">
@@ -110,7 +78,7 @@ export default function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-full text-gray-700 bg-transparent placeholder:text-gray-400 focus:outline-none"
+                className="w-full h-full text-white bg-transparent placeholder:text-gray-400 focus:outline-none"
               />
               {showPassword ? (
                 <EyeOff
@@ -178,7 +146,7 @@ export default function LoginPage() {
         >
           <Link
             to="/"
-            className="flex h-[50px] w-full items-center justify-center rounded-[5px] border border-gray-300 bg-transparent px-5 text-center text-sm font-semibold text-gray-500 transition-colors hover:bg-gray-100"
+            className="flex items-center justify-center  bg-transparent px-5 py-2.5 text-sm font-semibold text-gray-500 transition-colors hover:bg-gray-100 w-full h-[50px] text-center rounded-[5px] border border-gray-300"
           >
             Go Home
           </Link>

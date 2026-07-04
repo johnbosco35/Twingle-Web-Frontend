@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, ArrowLeft } from "lucide-react";
+import { Mail, ArrowLeft, AlertCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
 import SimpleSlider from "../../../lib/Sliding";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordFormData,
+} from "../../../lib/validationSchemas";
 
 const LOGIN_EMAIL_STORAGE_KEY = "twingle_login_email";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,13 +26,31 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    window.localStorage.removeItem(LOGIN_EMAIL_STORAGE_KEY);
+    setErrors({});
 
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/verify-otp", { state: { email: email.trim() } });
-    }, 1200);
+    try {
+      const formData: ForgotPasswordFormData = { email };
+
+      // Validate form data
+      forgotPasswordSchema.parse(formData);
+
+      setIsLoading(true);
+      window.localStorage.removeItem(LOGIN_EMAIL_STORAGE_KEY);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        navigate("/verify-otp", { state: { email: email.trim() } });
+      }, 1200);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.issues.forEach((err) => {
+          const path = err.path.join(".");
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
+      }
+    }
   };
 
   const leftVariants = {
@@ -57,12 +81,12 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden p-0">
+    <div className="flex min-h-screen overflow-x-hidden bg-white p-0">
       <motion.div
         variants={leftVariants}
         initial="hidden"
         animate="visible"
-        className="hidden md:flex md:h-screen md:w-1/2"
+        className="hidden md:flex md:h-screen md:w-[45%] lg:w-1/2"
       >
         <SimpleSlider />
       </motion.div>
@@ -71,7 +95,7 @@ export default function ForgotPasswordPage() {
         variants={rightVariants}
         initial="hidden"
         animate="visible"
-        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-1/2 md:px-8 lg:px-10"
+        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-[55%] md:px-6 lg:w-1/2 lg:px-8 xl:px-10"
       >
         <img
           src="src/assets/Container.png"
@@ -79,10 +103,10 @@ export default function ForgotPasswordPage() {
           className="mb-4 h-14 w-auto sm:h-16"
         />
 
-        <div className="flex w-full max-w-[600px] flex-col items-stretch gap-5 px-0 sm:gap-6">
+        <div className="flex w-full max-w-[560px] flex-col items-stretch gap-4 px-0 sm:gap-5 md:gap-6">
           <motion.div
             variants={itemVariants}
-            className="rounded-[12px] border border-gray-200 bg-slate-50 px-5 py-4 text-center"
+            className="rounded-[12px] border border-gray-200 bg-slate-50 px-5 py-4 text-center md:px-6"
           >
             <h1 className="text-2xl font-semibold text-gray-800">
               Reset Password
@@ -97,16 +121,34 @@ export default function ForgotPasswordPage() {
             onSubmit={handleSubmit}
             className="flex flex-col items-stretch gap-5"
           >
-            <div className="flex h-[50px] w-full items-center gap-3">
-              <Mail className="text-gray-400" />
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-full w-full rounded-[5px] border border-gray-400 bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                required
-              />
+            <div>
+              <div className="flex h-[50px] w-full items-center gap-3">
+                <Mail className="text-gray-400" />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.email;
+                        return newErrors;
+                      });
+                    }
+                  }}
+                  className={`h-full w-full rounded-[5px] border bg-transparent px-3 text-gray-700 placeholder:text-gray-400 focus:outline-none ${
+                    errors.email ? "border-red-500" : "border-gray-400"
+                  }`}
+                />
+              </div>
+              {errors.email && (
+                <div className="flex items-center gap-2 mt-2 text-red-500 text-sm">
+                  <AlertCircle size={16} />
+                  {errors.email}
+                </div>
+              )}
             </div>
 
             <motion.button

@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck, AlertCircle } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { z } from "zod";
 import SimpleSlider from "../../../lib/Sliding";
+import {
+  verifyOtpSchema,
+  type VerifyOtpFormData,
+} from "../../../lib/validationSchemas";
 
 const OTP_LENGTH = 6;
 
@@ -12,6 +17,7 @@ export default function VerifyOtpPage() {
   const email = (location.state as { email?: string } | null)?.email ?? "";
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
@@ -24,6 +30,11 @@ export default function VerifyOtpPage() {
     const nextOtp = [...otp];
     nextOtp[index] = value.slice(-1);
     setOtp(nextOtp);
+
+    // Clear error when user starts typing
+    if (error) {
+      setError("");
+    }
 
     if (value && index < OTP_LENGTH - 1) {
       inputRefs.current[index + 1]?.focus();
@@ -62,11 +73,25 @@ export default function VerifyOtpPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/login");
-    }, 1200);
+    setError("");
+
+    try {
+      const otpString = otp.join("");
+      const formData: VerifyOtpFormData = { otp: otpString };
+
+      // Validate OTP
+      verifyOtpSchema.parse(formData);
+
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        navigate("/login");
+      }, 1200);
+    } catch (err: any) {
+      if (err instanceof z.ZodError) {
+        setError(err.issues[0]?.message || "Invalid OTP");
+      }
+    }
   };
 
   const leftVariants = {
@@ -97,12 +122,12 @@ export default function VerifyOtpPage() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden p-0">
+    <div className="flex min-h-screen overflow-x-hidden bg-white p-0">
       <motion.div
         variants={leftVariants}
         initial="hidden"
         animate="visible"
-        className="hidden md:flex md:h-screen md:w-1/2"
+        className="hidden md:flex md:h-screen md:w-[45%] lg:w-1/2"
       >
         <SimpleSlider />
       </motion.div>
@@ -111,7 +136,7 @@ export default function VerifyOtpPage() {
         variants={rightVariants}
         initial="hidden"
         animate="visible"
-        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-1/2 md:px-8 lg:px-10"
+        className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 sm:px-6 md:w-[55%] md:px-6 lg:w-1/2 lg:px-8 xl:px-10"
       >
         <img
           src="src/assets/Container.png"
@@ -119,10 +144,10 @@ export default function VerifyOtpPage() {
           className="mb-4 h-14 w-auto sm:h-16"
         />
 
-        <div className="flex w-full max-w-[600px] flex-col items-stretch gap-5 px-0 sm:gap-6">
+        <div className="flex w-full max-w-[560px] flex-col items-stretch gap-4 px-0 sm:gap-5 md:gap-6">
           <motion.div
             variants={itemVariants}
-            className="rounded-[12px] border border-gray-200 bg-slate-50 px-5 py-4 text-center"
+            className="rounded-[12px] border border-gray-200 bg-slate-50 px-5 py-4 text-center md:px-6"
           >
             <div className="mb-3 flex justify-center">
               <div className="rounded-full bg-teal-100 p-3 text-teal-600">
@@ -145,7 +170,7 @@ export default function VerifyOtpPage() {
             onSubmit={handleSubmit}
             className="flex flex-col items-stretch gap-5"
           >
-            <div className="flex items-center justify-between gap-2 sm:gap-3">
+            <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4">
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -159,10 +184,21 @@ export default function VerifyOtpPage() {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="h-12 w-12 rounded-[8px] border border-gray-300 text-center text-lg font-semibold text-gray-700 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 sm:h-14 sm:w-14 bg-white"
+                  className={`h-12 w-12 rounded-[8px] border bg-white text-center text-lg font-semibold text-gray-700 outline-none focus:ring-2 sm:h-14 sm:w-14 md:h-14 md:w-14 ${
+                    error
+                      ? "border-red-500 focus:border-red-500 focus:ring-red-100"
+                      : "border-gray-300 focus:border-teal-500 focus:ring-teal-100"
+                  }`}
                 />
               ))}
             </div>
+
+            {error && (
+              <div className="flex items-center gap-2 text-red-500 text-sm">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
 
             <motion.button
               type="submit"
