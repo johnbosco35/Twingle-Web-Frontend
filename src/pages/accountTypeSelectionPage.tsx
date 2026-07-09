@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 export default function AccountTypeSelectionPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-br from-slate-50 to-white sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
-        className="w-full max-w-5xl rounded-3xl border border-gray-200 bg-white p-6 shadow-xl sm:p-8 lg:p-10"
+        className="w-full max-w-5xl p-6 bg-white border border-gray-200 shadow-xl rounded-3xl sm:p-8 lg:p-10"
       >
         <div className="mb-8 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-teal-600">
@@ -18,7 +18,7 @@ export default function AccountTypeSelectionPage() {
           <h1 className="text-3xl font-semibold text-gray-900 sm:text-4xl">
             How do you want to join Twingle?
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-600 sm:text-base">
+          <p className="max-w-2xl mx-auto mt-3 text-sm text-gray-600 sm:text-base">
             Select the option that best matches your needs and we’ll take you to
             the right sign-up form.
           </p>
@@ -27,9 +27,9 @@ export default function AccountTypeSelectionPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div
             whileHover={{ y: -4, scale: 1.01 }}
-            className="rounded-2xl border border-gray-200 bg-slate-50 p-6 shadow-sm"
+            className="p-6 border border-gray-200 shadow-sm rounded-2xl bg-slate-50"
           >
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100 text-teal-600">
+            <div className="flex items-center justify-center w-12 h-12 mb-4 text-teal-600 bg-teal-100 rounded-full">
               <UserRound size={24} />
             </div>
             <h2 className="text-xl font-semibold text-gray-900">
@@ -41,7 +41,7 @@ export default function AccountTypeSelectionPage() {
             </p>
             <Link
               to="/signup"
-              className="mt-6 inline-flex items-center justify-center rounded-lg bg-teal-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-600"
+              className="inline-flex items-center justify-center px-5 py-3 mt-6 text-sm font-semibold text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600"
             >
               Continue as a user
             </Link>
@@ -49,9 +49,9 @@ export default function AccountTypeSelectionPage() {
 
           <motion.div
             whileHover={{ y: -4, scale: 1.01 }}
-            className="rounded-2xl border border-gray-200 bg-slate-50 p-6 shadow-sm"
+            className="p-6 border border-gray-200 shadow-sm rounded-2xl bg-slate-50"
           >
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+            <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-amber-100 text-amber-600">
               <Building2 size={24} />
             </div>
             <h2 className="text-xl font-semibold text-gray-900">
@@ -62,15 +62,15 @@ export default function AccountTypeSelectionPage() {
               to list properties and manage their business profile.
             </p>
             <Link
-              to="/seller-signup"
-              className="mt-6 inline-flex items-center justify-center rounded-lg border border-amber-500 px-5 py-3 text-sm font-semibold text-amber-600 transition-colors hover:bg-amber-50"
+              to="/vendor-signup"
+              className="inline-flex items-center justify-center px-5 py-3 mt-6 text-sm font-semibold transition-colors border rounded-lg border-amber-500 text-amber-600 hover:bg-amber-50"
             >
               Continue as a seller
             </Link>
           </motion.div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 text-sm text-gray-600 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 pt-6 mt-8 text-sm text-gray-600 border-t border-gray-200 sm:flex-row sm:items-center sm:justify-between">
           <Link
             to="/login"
             className="inline-flex items-center gap-2 font-medium text-teal-600 hover:text-teal-700"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Building2, Clock3, MapPin, ShieldCheck,ArrowRight, ArrowLeft  } from "lucide-react";
+import { Building2, Clock3, MapPin, ShieldCheck } from "lucide-react";
 import fake1 from "@/assets/fake1.png";
 import fake2 from "@/assets/fake2.png";
 import fake3 from "@/assets/fake3.png";
@@ -44,14 +44,53 @@ const listings = [
       { icon: ShieldCheck, label: "Private access" },
     ],
   },
+  {
+    image: fake1,
+    badge: "Exclusive",
+    badgeClass: "bg-yellow-600/95 text-yellow-100",
+    title: "Skyline Penthouse",
+    location: "Manhattan, NY",
+    price: "$18,900,000",
+    stats: [
+      { icon: Building2, label: "4 beds" },
+      { icon: ShieldCheck, label: "5 baths" },
+      { icon: Clock3, label: "360° views" },
+    ],
+  },
+  {
+    image: fake2,
+    badge: "Limited Release",
+    badgeClass: "bg-rose-600/95 text-rose-100",
+    title: "Rolls Royce Phantom",
+    location: "Dubai, UAE",
+    price: "$5,950,000",
+    stats: [
+      { icon: Clock3, label: "V12" },
+      { icon: Building2, label: "2024" },
+      { icon: ShieldCheck, label: "Luxury finish" },
+    ],
+  },
+  {
+    image: fake3,
+    badge: "Featured",
+    badgeClass: "bg-emerald-700/95 text-emerald-100",
+    title: "Private Yacht Escape",
+    location: "Mediterranean Sea",
+    price: "$14,700,000",
+    stats: [
+      { icon: Building2, label: "5 cabins" },
+      { icon: Clock3, label: "120 ft" },
+      { icon: ShieldCheck, label: "Crew included" },
+    ],
+  },
 ];
 
 const Product: React.FC = () => {
   return (
-    <section className="px-6 py-12 mx-auto max-w-full sm:px-8 lg:px-12 flex flex-col gap-14 ">
-      <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-end sm:justify-between mt-10">
+    <section className="flex flex-col max-w-full px-6 py-12 mx-auto sm:px-8 lg:px-12 gap-14 ">
+      <div className="flex flex-col gap-4 mt-10 mb-10 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-2xl">
-          <p className="uppercase text-3xl text-slate-950 font-semibold  sm:text-4xl">
+          <p className="text-3xl font-semibold uppercase text-slate-950 sm:text-4xl">
             Curated Collections
           </p>
           <h2 className="mt-6 text-lg sm:text-xl">
@@ -59,17 +98,17 @@ const Product: React.FC = () => {
             fully vetted by our expert inspection team.
           </h2>
         </div>
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <button className="inline-flex items-center justify-center px-6 text-sm font-semibold transition bg-white border rounded-full shadow-sm h-14 border-slate-200 text-slate-700 hover:bg-slate-50">
             <ArrowRight className="w-6 h-6" />
           </button>
           <button className="inline-flex items-center justify-center px-6 text-sm font-semibold transition bg-white border rounded-full shadow-sm h-14 border-slate-200 text-slate-700 hover:bg-slate-50">
             <ArrowLeft className="w-6 h-6" />
           </button>
-        </div>
+        </div> */}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-x-6 gap-y-16 lg:grid-cols-3">
         {listings.map((item) => (
           <article
             key={item.title}

@@ -24,7 +24,7 @@ const NetworkError: React.FC<NetworkErrorProps> = ({ children, onRetry }) => {
       toastIdRef.current = toast.error(
         <div className="space-y-1">
           <p className="font-semibold">No internet connection</p>
-          <p className="text-sm text-yellow-100">
+          <p className="text-sm text-black">
             Please check your connection. We’ll remind you again shortly.
           </p>
         </div>,
